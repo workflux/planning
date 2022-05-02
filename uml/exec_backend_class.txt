@@ -1,0 +1,104 @@
+@startuml exec_backend_class
+skinparam classAttributeIconSize 0
+
+class JobController {
+    + get_exec_metadata(): dict
+    + get_job_status(job_id: uuid4): JobStatus
+    + submit_job(inputs: dict, workflow, exec_profile: string): None
+    + cancel_job(job_id: uuid4): None
+}
+
+class JobDAO {
+    + create_job(Job): None
+    + get_job(job_id: string): Job
+    + update_job_status(job_id: uuid4, new_status: JobStatus): None
+}
+
+class BatchJob {
+<<Not sure how to use, yet.>>
+}
+
+enum JobStatus {
+    PREPARING
+    EXECUTING
+    EVALUATING
+    FINALIZING
+    CANCELED
+    SUCCEEDED
+    FAILED
+}
+
+abstract class Job {
+    + job_id: uuid4
+    + job_status: JobStatus
+    {abstract} + prepare(): None
+    {abstract} + exec(): None
+    {abstract} + eval(): None
+    {abstract} + finalize(): None
+    {abstract} + cancel(): None
+}
+
+class PythonJob {
+
+}
+
+
+class WESJob {
+
+}
+
+class BashJob{
+    
+}
+
+class PyExecSession {
+
+}
+
+class BashExecSession {
+
+}
+
+class JobFactory{
+    + create_job(inputs: dict, workflow, exec_profile: ExecProfile): Job
+}
+
+enum ExecProfileType {
+    PYTHON
+    WES
+    BASH
+}
+
+enum WfLang {
+    CWL
+    WDL
+    NEXTFLOW
+    SNAKEMAKE
+}
+
+class ExecProfile {
+    + type: ExecProfileType
+    + wf_lang: WfLang
+    ...
+}
+
+JobController o-- JobDAO
+
+BatchJob o-- Job
+
+
+Job o-- JobDAO
+Job o-- ExecProfile
+Job <|.. PythonJob
+Job <|.. WESJob
+Job <|.. BashJob
+
+PythonJob <.. JobFactory: <<create>>
+WESJob <.. JobFactory: <<create>>
+BashJob <.. JobFactory: <<create>>
+
+
+PythonJob *-- PyExecSession
+BashJob *-- BashExecSession
+
+@enduml
