@@ -1,13 +1,6 @@
 @startuml exec_backend_class
 skinparam classAttributeIconSize 0
 
-class JobController {
-    + get_exec_metadata(): dict
-    + get_job_status(job_id: uuid4): JobStatus
-    + submit_job(inputs: dict, workflow, exec_profile: string): None
-    + cancel_job(job_id: uuid4): None
-}
-
 class JobDAO {
     + create_job(job: Job): None
     + get_job(job_id: string): Job
@@ -43,20 +36,7 @@ class PythonJob {
 
 }
 
-
-class WESJob {
-
-}
-
-class BashJob{
-    
-}
-
 class PyExecSession {
-
-}
-
-class BashExecSession {
 
 }
 
@@ -83,23 +63,12 @@ class ExecProfile {
     ...
 }
 
-JobController o-- JobDAO
-
-BatchJob o-- Job
-
-
 Job o-- JobDAO
 Job o-- ExecProfile
 Job <|.. PythonJob
-Job <|.. WESJob
-Job <|.. BashJob
 
 PythonJob <.. JobFactory: <<create>>
-WESJob <.. JobFactory: <<create>>
-BashJob <.. JobFactory: <<create>>
-
 
 PythonJob *-- PyExecSession
-BashJob *-- BashExecSession
 
 @enduml
