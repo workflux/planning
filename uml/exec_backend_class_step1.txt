@@ -2,7 +2,7 @@
 skinparam classAttributeIconSize 0
 
 class JobDAO {
-    + create_job(job: Job): None
+    + create_job(exec_profile, workflow, inputs, ...): uuid4 (job_id)
     + get_job(job_id: string): Job
     + update_job_status(job_id: uuid4, new_status: JobStatus): None
 }
@@ -25,6 +25,7 @@ enum JobStatus {
 abstract class Job {
     + job_id: uuid4
     + job_status: JobStatus
+    + exec_profile: ExecProfile
     {abstract} + prepare(): None
     {abstract} + exec(): None
     {abstract} + eval(): None
@@ -63,6 +64,7 @@ class ExecProfile {
     ...
 }
 
+JobFactory o-- JobDAO
 Job o-- JobDAO
 Job o-- ExecProfile
 Job <|.. PythonJob
